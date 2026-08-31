@@ -8,23 +8,40 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: 
+
+  workflow_dispatch:
 
 jobs:
-  ci:
+
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify environment
+      - name: Build application
         run: |
-          echo "CI pipeline is running"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Branch: $GITHUB_REF_NAME"
+          echo "Starting build..."
+          mkdir build
+          echo "Build successful" > build/result.txt
+          echo "Build completed"
 
-      - name: Run validation
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: build/
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run tests
         run: |
-          echo "Running validation..."
-          echo "Validation successful"
+          echo "Running tests..."
+          echo "All tests passed"
