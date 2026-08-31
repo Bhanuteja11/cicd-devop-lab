@@ -41,16 +41,41 @@ jobs:
 
       - name: Build application
         run: |
-          echo "Starting build..."
+          VERSION="1.0.${{ github.run_number }}"
+
+          echo "Application version: $VERSION"
+
           mkdir build
-          echo "Build successful" > build/result.txt
-          echo "Build completed"
+
+          echo "Application: $APPLICATION_NAME" > build/application.txt
+          echo "Version: $VERSION" >> build/application.txt
+          echo "Commit: $GITHUB_SHA" >> build/application.txt
+          echo "Environment: $ENVIRONMENT" >> build/application.txt
+
+          echo "Build completed successfully"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: build/
+  verify-artifact:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: downloaded-artifact
+
+      - name: Verify artifact
+        run: |
+          echo "Artifact contents:"
+          cat downloaded-artifact/application.txt
+
+          echo "Artifact verification successful"
   test:
     needs: build
     runs-on: ubuntu-latest
