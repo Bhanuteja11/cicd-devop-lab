@@ -1,5 +1,8 @@
 name: CI Pipeline
 
+env:
+  APPLICATION_NAME: cicd-devops-lab
+  ENVIRONMENT: dev
 on:
   push:
     branches:
@@ -20,6 +23,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Display environment
+        run: |
+          echo "Application: $APPLICATION_NAME"
+          echo "Environment: $ENVIRONMENT"
+
       - name: Build application
         run: |
           echo "Starting build..."
@@ -32,7 +40,6 @@ jobs:
         with:
           name: build-output
           path: build/
-
   test:
     needs: build
     runs-on: ubuntu-latest
