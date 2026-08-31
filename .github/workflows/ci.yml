@@ -27,6 +27,17 @@ jobs:
         run: |
           echo "Application: $APPLICATION_NAME"
           echo "Environment: $ENVIRONMENT"
+          
+      - name: Verify secret availability
+        env:
+          TRAINING_SECRET: ${{ secrets.TRAINING_SECRET }}
+        run: |
+          if [ -n "$TRAINING_SECRET" ]; then
+            echo "Secret is available to the job"
+          else
+            echo "Secret is missing"
+            exit 1
+          fi
 
       - name: Build application
         run: |
