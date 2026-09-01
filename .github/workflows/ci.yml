@@ -83,8 +83,95 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+  deploy-dev:
+    needs: verify-artifact
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: artifact
+
+      - name: Deploy to DEV
+        run: |
+          echo "================================"
+          echo "Deploying application"
+          echo "Environment: DEV"
+          echo "================================"
+
+          cat artifact/application.txt
+
+          echo "DEV deployment successful"
 
       - name: Run tests
         run: |
           echo "Running tests..."
           echo "All tests passed"
+  deploy-qa:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: artifact
+
+      - name: Deploy to QA
+        run: |
+          echo "================================"
+          echo "Deploying application"
+          echo "Environment: QA"
+          echo "================================"
+
+          cat artifact/application.txt
+
+          echo "QA deployment successful"
+
+  deploy-uat:
+    needs: deploy-qa
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: artifact
+
+      - name: Deploy to UAT
+        run: |
+          echo "================================"
+          echo "Deploying application"
+          echo "Environment: UAT"
+          echo "================================"
+
+          cat artifact/application.txt
+
+          echo "UAT deployment successful"
+
+
+  deploy-production:
+    needs: deploy-uat
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: artifact
+
+      - name: Deploy to Production
+        run: |
+          echo "================================"
+          echo "Deploying application"
+          echo "Environment: PRODUCTION"
+          echo "================================"
+
+          cat artifact/application.txt
+
+          echo "PRODUCTION deployment successful"
