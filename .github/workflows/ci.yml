@@ -158,6 +158,9 @@ jobs:
     needs: deploy-uat
     runs-on: ubuntu-latest
 
+    environment:
+      name: production
+
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
