@@ -178,3 +178,36 @@ jobs:
           cat artifact/application.txt
 
           echo "PRODUCTION deployment successful"
+
+  deployment-strategy:
+    needs: deploy-production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rolling deployment simulation
+        run: |
+          echo "Starting rolling deployment..."
+          echo "Instance 1 → v2"
+          echo "Instance 2 → v2"
+          echo "Instance 3 → v1"
+          echo "Instance 4 → v1"
+
+          echo "Health checks passed"
+
+          echo "Instance 3 → v2"
+          echo "Instance 4 → v2"
+
+          echo "Rolling deployment completed"
+
+  rollback:
+    needs: deployment-strategy
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rollback deployment
+        run: |
+          echo "Deployment failed"
+          echo "Starting rollback..."
+          echo "Restoring previous version..."
+          echo "Rollback completed successfully"
